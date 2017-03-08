@@ -10,4 +10,6 @@ CREATE TABLE  `books` (<br/>
 `isbn` VARCHAR( 50 ) NOT NULL<br/>
 ) ENGINE = MYISAM ;<br/>
 -----------------------------END DB------------------------------<br/><br/>
-Note: charsets are all utf8_turkish_ci
+Notes:<br/><br/>
+1 - charsets are all utf8_turkish_ci<br/>
+2 - for cache file to be created you need to set chmod both read and write
