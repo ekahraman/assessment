@@ -1,13 +1,13 @@
 # MobilDev small Assessment
 @author Emre KAHRAMAN
-__
------------------------------ DB -------------------------------
+<br/>
+----------------------------- DB -------------------------------<br/>
 
-CREATE TABLE  `books` (_
-`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,_
-`book_name` VARCHAR( 100 ) NOT NULL ,_
-`author_name` VARCHAR( 50 ) NOT NULL ,_
-`isbn` VARCHAR( 50 ) NOT NULL_
-) ENGINE = MYISAM ;_
------------------------------END DB------------------------------_
-Note: charsets are all utf8_turkish_ci_
+CREATE TABLE  `books` (<br/>
+`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,<br/>
+`book_name` VARCHAR( 100 ) NOT NULL ,<br/>
+`author_name` VARCHAR( 50 ) NOT NULL ,<br/>
+`isbn` VARCHAR( 50 ) NOT NULL<br/>
+) ENGINE = MYISAM ;<br/>
+-----------------------------END DB------------------------------<br/><br/>
+Note: charsets are all utf8_turkish_ci
