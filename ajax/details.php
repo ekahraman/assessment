@@ -1,11 +1,13 @@
 <?php
-if (isset($_POST['id']) && isset($_POST['id']) != "") {
+if (isset($_POST['id']) &&
+    isset($_POST['id']) != "")
+{
+    require "crud.class.php"; // No need to include this file if no input is posted
 
-    require 'connection.php';
+    $book_id    = $_POST['id'];
+    $object     = new DB_OPS();
 
-    $user_id    = $_POST['id'];
-    $object     = new CrudClass();
-
-    // Shows the related user's records by user_id @param via Details method
-    echo $object->Details($user_id);
+    // Shows the related book's records by book_id @param via Details method
+    echo $object->Details($book_id);
 }
+?>

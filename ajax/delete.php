@@ -1,11 +1,13 @@
 <?php
-if (isset($_POST['id']) && isset($_POST['id']) != "") {
+if (isset($_POST['id']) &&
+    isset($_POST['id']) != "")
+{
+    require "crud.class.php"; // No need to include this file if no input is posted
 
-    require 'connection.php';
+    $book_id    = $_POST['id'];
+    $object     = new DB_OPS();
 
-    $user_id = $_POST['id'];
-
-    $object = new CrudClass();
     // Remove the user record from the database via Delete method
-    $object->Delete($user_id);
+    $object->Delete($book_id);
 }
+?>

@@ -1,118 +1,100 @@
-jQuery(document).ready(function () {
+$(document).ready(function () {
     readRecords();
 });
 
 
-function addNewUser() {
-
-    var username                = (jQuery("#username").val()).trim();
-    var age                     = (jQuery("#age").val()).trim();
-    var email                   = (jQuery("#email").val()).trim();
-    var favourite_sports_team   = (jQuery("#favourite_sports_team").val()).trim();
-
-    // Some basic validations
-    if (username == "")                     alert("You have to fill out the Username");
-    else if (age == "")                     alert("You have to fill out the Age");
-    else if (email == "")                   alert("You have to fill out the Email");
-    else if (favourite_sports_team == "")   alert("You have to fill out the Favourite Sports Team");
-    else {
-        jQuery.post("ajax/create.php", {
-            username                : username,
-            age                     : age,
-            email                   : email,
-            favourite_sports_team   : favourite_sports_team
-        }, function (data, status) {
-            // close the popup
-            jQuery("#modal_add").modal("hide")
-
-            // read records again
-            readRecords();
-
-            // Reset fields
-            jQuery("#username").val("");
-            jQuery("#age").val("");
-            jQuery("#email").val("");
-            jQuery("#favourite_sports_team").val("");
-        });
-    }
-}
-
-function DeleteUser(id) {
-
-    var conf = confirm("");
-    if (conf == true) {
-        jQuery.post("ajax/delete.php", {
-                id: id
-            },
-            function (data, status) {
-                // reload Users by using readRecords();
-                readRecords();
-            }
-        );
-    }
-}
-
-
 function readRecords() {
 
-    jQuery.get("ajax/read.php", {
+    $.get("ajax/read.php", {
         // No params
     }, function (data, status) {
-        jQuery("#all-users").html(data);
+        $(".records_content").html(data);
     });
 }
 
 
-function GetUserDetails(id) {
+function addBook() {
 
-    jQuery("#hidden_user_id").val(id);
+    var book_name   = ($("#book_name").val()).trim();
+    var author_name = ($("#author_name").val()).trim();
+    var isbn        = ($("#isbn").val()).trim();
 
-    jQuery.post("ajax/details.php", {
-            id: id
-        },
-        function (data, status) {
+    // Some basic validation
+    if (book_name == "")            alert("First name field is required!");
+    else if (author_name == "")     alert("Last name field is required!");
+    else if (isbn == "")            alert("isbn field is required!");
+    else {
+        $.post("ajax/create.php", {
+            book_name   : book_name,
+            author_name : author_name,
+            isbn        : isbn
+        }, function (data, status) {
+            $("#add_new_book").modal("hide");
 
-            var user = JSON.parse(data);
-            // Assign existing values to the modal popup fields
-            jQuery("#update_username").val(user.username);
-            jQuery("#update_age").val(user.age);
-            jQuery("#update_email").val(user.email);
-            jQuery("#update_favourite_sports_team").val(user.favourite_sports_team);
-        }
-    );
-    // Open modal popup
-    jQuery("#modal_update").modal("show");
+            readRecords();
+            // Clear Fields
+            $("#book_name").val("");
+            $("#author_name").val("");
+            $("#isbn").val("");
+        });
+    }
 }
 
 
-function UpdateUserDetails() {
+function deleteBook(id) {
 
-    var username                = (jQuery("#update_username").val()).trim();
-    var age                     = (jQuery("#update_age").val()).trim();
-    var email                   = (jQuery("#update_email").val()).trim();
-    var favourite_sports_team   = (jQuery("#update_favourite_sports_team").val()).trim();
+    $.post("ajax/delete.php", {
+            id: id
+        },
+        function (data, status) {
+            readRecords();
+        }
+    );
+}
 
-    // Some basic validations
-    if (username == "")                     alert("You have to fill out the Username");
-    else if (age == "")                     alert("You have to fill out the Age");
-    else if (email == "")                   alert("You have to fill out the Email");
-    else if (favourite_sports_team == "")   alert("You have to fill out the Favourite Sports Team");
+
+function updateBook() {
+
+    var book_name = ($("#update_book_name").val()).trim();
+    var author_name = ($("#update_author_name").val()).trim();
+    var isbn = ($("#update_isbn").val()).trim();
+
+    // Some basic validation
+    if (book_name == "")            alert("First name field is required!");
+    else if (author_name == "")     alert("Last name field is required!");
+    else if (isbn == "")            alert("isbn field is required!");
     else {
-        var id = jQuery("#hidden_user_id").val();
+        var id = $("#book_id").val();
 
-        jQuery.post("ajax/update.php", {
-                id                      : id,
-                username                : username,
-                age                     : age,
-                email                   : email,
-                favourite_sports_team   : favourite_sports_team
+        $.post("ajax/update.php", {
+                id          : id,
+                book_name   : book_name,
+                author_name : author_name,
+                isbn        : isbn
             },
             function (data, status) {
-                // hide modal popup
-                jQuery("#modal_update").modal("hide");
-                // reload Users by using readRecords();
+                $("#update_book").modal("hide");
+
                 readRecords();
             }
         );
     }
+}
+
+
+function bookDetails(id) {
+
+    $("#book_id").val(id);
+    $.post("ajax/details.php", {
+            id: id
+        },
+        function (data, status) {
+            var json = JSON.parse(data);
+
+            $("#update_book_name").val(json.book_name);
+            $("#update_author_name").val(json.author_name);
+            $("#update_isbn").val(json.isbn);
+        }
+    );
+    $("#update_book").modal("show");
 }

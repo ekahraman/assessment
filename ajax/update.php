@@ -1,15 +1,14 @@
 <?php
 if (isset($_POST)) {
+    require "crud.class.php"; // No need to include this file if no input is posted
 
-    require 'crud.class.php';
+    $id             = $_POST['id'];
+    $book_name      = $_POST['book_name'];
+    $author_name    = $_POST['author_name'];
+    $isbn           = $_POST['isbn'];
 
-    $id                     = $_POST['id'];
-    $username               = $_POST['username'];
-    $age                    = $_POST['age'];
-    $email                  = $_POST['email'];
-    $favourite_sports_team  = $_POST['favourite_sports_team'];
+    $object         = new DB_OPS();
 
-    $object                 = new CrudClass();
-    // Update the database record via Update method.
-    $object->Update($username, $age, $email, $favourite_sports_team, $id);
+    // Update the database record via Update method
+    $object->Update($book_name, $author_name, $isbn, $id);
 }

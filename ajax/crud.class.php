@@ -2,11 +2,12 @@
 
 require __DIR__ . '/connection.php';
 
+
 /**
  * Class CrudClass is used for database related (Create, Read, Update and Delete) operations.
  * There are 5 methods in the class in which will be explained in relevant docblocks.
  */
-class CrudClass
+class DB_OPS
 {
 
     protected $db;
@@ -25,39 +26,67 @@ class CrudClass
         $this->db = null;
     }
 
-
-    /**
+    /*
      * Insert data into the database.
      *
-     * @param $username
-     * @param $age
-     * @param $email
-     * @param $favourite_sports_club
-     * @return string
-     */
-    public function Create($username, $age, $email, $favourite_sports_club) {
+     * @param $book_name
+     * @param $author_name
+     * @param $isbn
+     * @return $mixed
+     * */
+    public function Create($book_name, $author_name, $isbn) {
 
-        $query = $this->db->prepare("INSERT INTO users(username, age, email, favourite_sports_club) VALUES (:username,:age,:email,:favourite_sports_club)");
-        $query->bindParam("username", $username, PDO::PARAM_STR);
-        $query->bindParam("age", $age, PDO::PARAM_INT);
-        $query->bindParam("email", $email, PDO::PARAM_STR);
-        $query->bindParam("favourite_sports_club", $favourite_sports_club, PDO::PARAM_STR);
+        $query = $this->db->prepare("INSERT INTO books(book_name, author_name, isbn) VALUES (:book_name,:author_name,:isbn)");
+        $query->bindParam("book_name", $book_name, PDO::PARAM_STR);
+        $query->bindParam("author_name", $author_name, PDO::PARAM_STR);
+        $query->bindParam("isbn", $isbn, PDO::PARAM_STR);
         $query->execute();
 
         return $this->db->lastInsertId();
     }
 
+    /*
+     * Delete relevant record from the database.
+     *
+     * @param $book_id
+     * */
+    public function Delete($book_id) {
+
+        $query = $this->db->prepare("DELETE FROM books WHERE id = :id");
+        $query->bindParam("id", $book_id, PDO::PARAM_INT);
+        $query->execute();
+    }
+
+    /*
+     * Delete relevant record from the database.
+     *
+     * @param $book_name
+     * @param $author_name
+     * @param $isbn
+     * @return $mixed
+     * */
+    public function Update($book_name, $author_name, $isbn, $book_id) {
+
+        $query = $this->db->prepare("UPDATE books SET book_name = :book_name, author_name = :author_name, isbn = :isbn  WHERE id = :id");
+        $query->bindParam("book_name", $book_name, PDO::PARAM_STR);
+        $query->bindParam("author_name", $author_name, PDO::PARAM_STR);
+        $query->bindParam("isbn", $isbn, PDO::PARAM_STR);
+        $query->bindParam("id", $book_id, PDO::PARAM_INT);
+        $query->execute();
+    }
 
     /*
      * Get all the data from the database.
      *
      * @return $mixed
-     */
+     * */
     public function Read() {
 
-        $query = $this->db->prepare("SELECT * FROM users");
+        $query = $this->db->prepare("SELECT * FROM books");
         $query->execute();
-        $data = array();
+
+        $data = array(); // Define result array
+
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $data[] = $row;
         }
@@ -65,50 +94,20 @@ class CrudClass
         return $data;
     }
 
-
-    /*
-     * Delete relevant record from the database.
-     *
-     * @param $user_id
+    /**
+     * Get selected book details by the book's id
+     * 
+     * @param $book_id
+     * @return string
      */
-    public function Delete($user_id) {
+    public function Details($book_id) {
 
-        $query = $this->db->prepare("DELETE FROM users WHERE id = :id");
-        $query->bindParam("id", $user_id, PDO::PARAM_STR);
+        $query = $this->db->prepare("SELECT * FROM books WHERE id = :id");
+        $query->bindParam("id", $book_id, PDO::PARAM_INT);
         $query->execute();
-    }
 
-
-    /*
-     * Update data and save in database.
-     *
-     * @param $first_name
-     * @param $last_name
-     * @param $email
-     * @return $mixed
-     */
-    public function Update($username, $age, $email, $favourite_sports_club, $user_id) {
-
-        $query = $this->db->prepare("UPDATE users SET username= :username, age= :age, email= :email, favourite_sports_club= :favourite_sports_club WHERE id = :id");
-        $query->bindParam("username", $username, PDO::PARAM_STR);
-        $query->bindParam("age", $age, PDO::PARAM_INT);
-        $query->bindParam("email", $email, PDO::PARAM_STR);
-        $query->bindParam("favourite_sports_club", $favourite_sports_club, PDO::PARAM_STR);
-        $query->bindParam("id", $user_id, PDO::PARAM_STR);
-        $query->execute();
-    }
-
-    /*
-     * Get selected users details by the user's id.
-     *
-     * @param $user_id
-     * */
-    public function Details($user_id) {
-
-        $query = $this->db->prepare("SELECT * FROM users WHERE id = :id");
-        $query->bindParam("id", $user_id, PDO::PARAM_STR);
-        $query->execute();
         return json_encode($query->fetch(PDO::FETCH_ASSOC));
-
     }
 }
+
+?>

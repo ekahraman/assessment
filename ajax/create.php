@@ -1,19 +1,16 @@
 <?php
-if (
-    isset($_POST['username']) &&
-    isset($_POST['age']) &&
-    isset($_POST['email']) &&
-    isset($_POST['favourite_sports_club'])
-    ) {
+if (isset($_POST['book_name']) &&
+    isset($_POST['author_name']) &&
+    isset($_POST['isbn'])
+) {
+    require "crud.class.php"; // No need to include this file if no input is posted
 
-    require("crud.class.php");
+    $book_name      = $_POST['book_name'];
+    $author_name    = $_POST['author_name'];
+    $isbn           = $_POST['isbn'];
 
-    $username               = $_POST['username'];
-    $age                    = $_POST['age'];
-    $email                  = $_POST['email'];
-    $favourite_sports_club  = $_POST['favourite_sports_club'];
+    $object         = new DB_OPS();
 
-    $object                 = new CrudClass();
-
-    $object->Create($username, $age, $email, $favourite_sports_club);
+    $object->Create($book_name, $author_name, $isbn);
 }
+?>
