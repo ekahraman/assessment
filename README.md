@@ -21,4 +21,4 @@ Notes:<br/><br/>
 <br/>
 2) "ajax" file is removed and another 2 called "api" and "class" are created
 <br/>
-<3) Instead of sending for each request, now there's only one endpoint for RESTful service.
+3) Instead of sending for each request, now there's only one endpoint for RESTful service.
