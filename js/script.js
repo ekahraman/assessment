@@ -5,10 +5,35 @@ $(document).ready(function () {
 
 function readRecords() {
 
-    $.get("ajax/read.php", {
+    $.post("api/book.php", {
         // No params
+        method: "GET",
     }, function (data, status) {
-        $(".records_content").html(data);
+
+        var json        = JSON.parse(data);
+        var skeleton    = '<table id="records" class="table table-hover table-responsive"> <tr><th>Book Name</th><th>Author Name</th><th>ISBN No</th><th>Update / Delete</th></tr>';
+
+        $( ".records_content" ).append(skeleton);
+
+        if (json.length == 0) {
+            $( "#records" ).append('<tr class="child">' +
+                '<td colspan="4">' +
+                    '<p class="bg-danger">Not a single book in the database yet. Why don\'t you create one?</p>' +
+                '</td></tr>');
+        } else {
+            for(i=0; i< Object.keys(json).length; i++) {
+                $( "#records" ).append('<tr class="child">' +
+                    '<td>' + json[i]["book_name"] + '</td>' +
+                    '<td>' + json[i]["author_name"] + '</td>' +
+                    '<td>' + json[i]["isbn"] + '</td>' +
+                    '<td>' +
+                        '<button onclick="bookDetails(' + json[i]['id'] +')" class="btn btn-info"><i class="fa fa-refresh" aria-hidden="true"></i></button>' +
+                        '<button onclick="deleteBook(' + json[i]['id'] +')" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button> ' +
+                    '</td>'
+                );
+            }
+        }
+
     });
 }
 
@@ -24,13 +49,15 @@ function addBook() {
     else if (author_name == "")     alert("Last name field is required!");
     else if (isbn == "")            alert("isbn field is required!");
     else {
-        $.post("ajax/create.php", {
+        $.post("api/book.php", {
             book_name   : book_name,
             author_name : author_name,
-            isbn        : isbn
+            isbn        : isbn,
+            method      : "POST"
         }, function (data, status) {
             $("#add_new_book").modal("hide");
 
+            clearTable();
             readRecords();
             // Clear Fields
             $("#book_name").val("");
@@ -43,10 +70,12 @@ function addBook() {
 
 function deleteBook(id) {
 
-    $.post("ajax/delete.php", {
-            id: id
+    $.post("api/book.php", {
+            id: id,
+            method:"DELETE"
         },
         function (data, status) {
+            clearTable();
             readRecords();
         }
     );
@@ -66,15 +95,16 @@ function updateBook() {
     else {
         var id = $("#book_id").val();
 
-        $.post("ajax/update.php", {
+        $.post("api/book.php", {
                 id          : id,
                 book_name   : book_name,
                 author_name : author_name,
-                isbn        : isbn
+                isbn        : isbn,
+                method      : "PUT"
             },
             function (data, status) {
                 $("#update_book").modal("hide");
-
+                clearTable();
                 readRecords();
             }
         );
@@ -85,8 +115,9 @@ function updateBook() {
 function bookDetails(id) {
 
     $("#book_id").val(id);
-    $.post("ajax/details.php", {
-            id: id
+    $.post("api/book.php", {
+            id      : id,
+            method  : "SELECT"
         },
         function (data, status) {
             var json = JSON.parse(data);
@@ -97,4 +128,10 @@ function bookDetails(id) {
         }
     );
     $("#update_book").modal("show");
+}
+
+
+function clearTable() {
+    $( ".records_content" ).empty();
+
 }
