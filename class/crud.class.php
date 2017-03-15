@@ -78,7 +78,7 @@ class DB_OPS
     /*
      * Get all the data from the database.
      *
-     * @return $mixed
+     * @return string
      * */
     public function Read() {
 
